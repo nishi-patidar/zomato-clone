@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zomato - Discover the best food & drinks</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --zomato-red: #e23744;
+            --zomato-dark: #1c1c1c;
+            --text-primary: #1c1c1c;
+            --text-secondary: #696969;
+            --bg-light: #f8f8f8;
+            --white: #ffffff;
+            --border: #e8e8e8;
+            --shadow: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-hover: 0 4px 16px rgba(0,0,0,0.12);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--white);
+            box-shadow: var(--shadow);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--zomato-red);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--zomato-red);
+        }
+
+        .btn-login {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-login:hover {
+            background: var(--bg-light);
+        }
+
+        .btn-signup {
+            background: var(--zomato-red);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-signup:hover {
+            background: #d32f3c;
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1600') center/cover;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            margin-top: 70px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+            max-width: 700px;
+            padding: 0 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            display: flex;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-box button {
+            background: var(--zomato-red);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background: #d32f3c;
+        }
+
+        /* Filter Section */
+        .filters {
+            background: var(--white);
+            padding: 1.5rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 70px;
+            z-index: 999;
+        }
+
+        .filter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--zomato-red);
+            color: white;
+            border-color: var(--zomato-red);
+        }
+
+        /* Restaurant Grid */
+        .restaurants-section {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .restaurant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .restaurant-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .restaurant-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .restaurant-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--zomato-red);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .restaurant-info {
+            padding: 1.5rem;
+        }
+
+        .restaurant-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .restaurant-cuisine {
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .restaurant-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: var(--zomato-red);
+            color: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .price {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Restaurant Detail Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 900px;
+            width: 100%;
+            margin: 2rem auto;
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            z-index: 10;
+        }
+
+        .modal-header {
+            position: relative;
+        }
+
+        .modal-header img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .restaurant-detail-name {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .restaurant-detail-info {
+            display: flex;
+            gap: 2rem;
+            margin: 1rem 0;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-item i {
+            color: var(--zomato-red);
+        }
+
+        .menu-section {
+            margin-top: 2rem;
+        }
+
+        .menu-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .menu-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        .menu-item-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .menu-item-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .menu-item-price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--zomato-red);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--zomato-dark);
+            color: white;
+            padding: 3rem 2rem 1rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--zomato-red);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid #333;
+            color: #999;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+
+            .restaurant-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 0;
+                border-radius: 0;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--zomato-red);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* No Results */
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .no-results i {
+            font-size: 4rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .no-results h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-results p {
+            color: var(--text-secondary);
+        }
+
+        /* Order Online Section */
+        .order-section {
+            background: var(--bg-light);
+            padding: 3rem 2rem;
+        }
+
+        .order-tabs {
+            display: flex;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .order-tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .order-tab.active {
+            color: var(--zomato-red);
+            border-bottom-color: var(--zomato-red);
+        }
+
+        /* Collections */
+        .collections {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .collection-card {
+            position: relative;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .collection-card:hover {
+            transform: scale(1.05);
+        }
+
+        .collection-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .collection-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 2rem 1.5rem;
+            color: white;
+        }
+
+        .collection-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .collection-count {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            background: white;
+            padding: 2rem;
+            margin-top: 2rem;
+            border-radius: 12px;
+        }
+
+        .review-card {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .review-card:last-child {
+            border-bottom: none;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--zomato-red);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .reviewer-name {
+            font-weight: 600;
+        }
+
+        .review-rating {
+            background: var(--zomato-red);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .review-text {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .review-action {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .review-action:hover {
+            color: var(--zomato-red);
+        }
+
+        /* Add to Cart */
+        .add-to-cart {
+            background: var(--zomato-red);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background: #d32f3c;
+            transform: scale(1.05);
+        }
+
+        /* Cart Badge */
+        .cart-badge {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--zomato-red);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .cart-badge:hover {
+            transform: scale(1.1);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: white;
+            color: var(--zomato-red);
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Delivery Info */
+        .delivery-info {
+            display: flex;
+            gap: 2rem;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .delivery-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .delivery-item i {
+            color: var(--zomato-red);
+        }
+
+        /* Offers Banner */
+        .offers-banner {
+            background: linear-gradient(135deg, #FFE5E5, #FFF5F5);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--zomato-red);
+        }
+
+        .offer-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--zomato-red);
+            margin-bottom: 0.5rem;
+        }
+
+        .offer-text {
+            color: var(--text-secondary);
+        }
+
+        /* Quick Filters */
+        .quick-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .quick-filter {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .quick-filter:hover, .quick-filter.active {
+            background: var(--zomato-red);
+            color: white;
+            border-color: var(--zomato-red);
+        }
+
+        /* Sort Options */
+        .sort-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+        }
+
+        .sort-select {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        /* Cuisines Section */
+        .cuisines-section {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .cuisines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .cuisine-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .cuisine-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .cuisine-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .cuisine-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">Zomato</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#"><i class="fas fa-search"></i> Search</a></li>
+                <li><a href="#"><i class="fas fa-utensils"></i> Restaurants</a></li>
+                <li><a href="#"><i class="fas fa-heart"></i> Favorites</a></li>
+                <li><button class="btn-login">Log in</button></li>
+                <li><button class="btn-signup">Sign up</button></li>
+            </ul>
+            <button class="mobile-menu" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Discover the best food & drinks</h1>
+        <p>Find the best restaurants, cafes, and bars near you</p>
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search for restaurants, cuisines..." onkeyup="searchRestaurants()">
+                <button><i class="fas fa-search"></i> Search</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Online Tabs -->
+    <section class="order-section">
+        <div class="order-tabs">
+            <button class="order-tab active">Delivery</button>
+            <button class="order-tab">Dining Out</button>
+            <button class="order-tab">Nightlife</button>
+        </div>
+    </section>
+
+    <!-- Collections -->
+    <section class="collections">
+        <h2 class="section-title">Collections</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Explore curated lists of top restaurants, cafes, pubs, and bars</p>
+        <div class="collection-grid">
+            <div class="collection-card">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400" alt="Trending This Week">
+                <div class="collection-overlay">
+                    <div class="collection-title">Trending This Week</div>
+                    <div class="collection-count">12 Places</div>
+                </div>
+            </div>
+            <div class="collection-card">
+                <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400" alt="Best Buffets">
+                <div class="collection-overlay">
+                    <div class="collection-title">Best Buffets</div>
+                    <div class="collection-count">8 Places</div>
+                </div>
+            </div>
+            <div class="collection-card">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400" alt="Late Night Dining">
+                <div class="collection-overlay">
+                    <div class="collection-title">Late Night Dining</div>
+                    <div class="collection-count">15 Places</div>
+                </div>
+            </div>
+            <div class="collection-card">
+                <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400" alt="Romantic Dining">
+                <div class="collection-overlay">
+                    <div class="collection-title">Romantic Dining</div>
+                    <div class="collection-count">10 Places</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters">
+        <div class="filter-container">
+            <button class="filter-btn active" onclick="filterRestaurants('all')">All</button>
+            <button class="filter-btn" onclick="filterRestaurants('Indian')">Indian</button>
+            <button class="filter-btn" onclick="filterRestaurants('Chinese')">Chinese</button>
+            <button class="filter-btn" onclick="filterRestaurants('Italian')">Italian</button>
+            <button class="filter-btn" onclick="filterRestaurants('Fast Food')">Fast Food</button>
+            <button class="filter-btn" onclick="filterRestaurants('Desserts')">Desserts</button>
+        </div>
+    </section>
+
+    <!-- Quick Filters and Sort -->
+    <section class="restaurants-section">
+        <div class="offers-banner">
+            <div class="offer-title"><i class="fas fa-tag"></i> Special Offers</div>
+            <div class="offer-text">Get flat 50% off on your first order | Use code: FIRST50</div>
+        </div>
+
+        <div class="sort-container">
+            <div class="quick-filters">
+                <div class="quick-filter"><i class="fas fa-star"></i> Rating: 4.0+</div>
+                <div class="quick-filter"><i class="fas fa-leaf"></i> Pure Veg</div>
+                <div class="quick-filter"><i class="fas fa-bolt"></i> Fast Delivery</div>
+                <div class="quick-filter"><i class="fas fa-tag"></i> Offers</div>
+            </div>
+            <select class="sort-select">
+                <option>Relevance</option>
+                <option>Rating: High to Low</option>
+                <option>Delivery Time</option>
+                <option>Cost: Low to High</option>
+                <option>Cost: High to Low</option>
+            </select>
+        </div>
+        <h2 class="section-title">Popular Restaurants</h2>
+        <div class="restaurant-grid" id="restaurantGrid">
+            <!-- Restaurant 1 -->
+            <div class="restaurant-card" onclick="openRestaurantDetail(1)">
+                <div style="position: relative;">
+                    <img src="https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400" alt="The Spice Route" class="restaurant-image">
+                    <div class="restaurant-badge">Trending</div>
+                </div>
+                <div class="restaurant-info">
+                    <h3 class="restaurant-name">The Spice Route</h3>
+                    <p class="restaurant-cuisine">Indian, North Indian</p>
+                    <div class="restaurant-meta">
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.5</span>
+                        </div>
+                        <div class="price">₹500 for two</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Restaurant 2 -->
+            <div class="restaurant-card" onclick="openRestaurantDetail(2)">
+                <div style="position: relative;">
+                    <img src="https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400" alt="Dragon Wok" class="restaurant-image">
+                    <div class="restaurant-badge">Popular</div>
+                </div>
+                <div class="restaurant-info">
+                    <h3 class="restaurant-name">Dragon Wok</h3>
+                    <p class="restaurant-cuisine">Chinese, Asian</p>
+                    <div class="restaurant-meta">
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.2</span>
+                        </div>
+                        <div class="price">₹400 for two</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Restaurant 3 -->
+            <div class="restaurant-card" onclick="openRestaurantDetail(3)">
+                <div style="position: relative;">
+                    <img src="https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400" alt="Pasta Paradise" class="restaurant-image">
+                    <div class="restaurant-badge">New</div>
+                </div>
+                <div class="restaurant-info">
+                    <h3 class="restaurant-name">Pasta Paradise</h3>
+                    <p class="restaurant-cuisine">Italian, Continental</p>
+                    <div class="restaurant-meta">
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.7</span>
+                        </div>
+                        <div class="price">₹800 for two</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Restaurant 4 -->
+            <div class="restaurant-card" onclick="openRestaurantDetail(4)">
+                <div style="position: relative;">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400" alt="Burger Hub" class="restaurant-image">
+                    <div class="restaurant-badge">Fast Delivery</div>
+                </div>
+                <div class="restaurant-info">
+                    <h3 class="restaurant-name">Burger Hub</h3>
+                    <p class="restaurant-cuisine">Fast Food, American</p>
+                    <div class="restaurant-meta">
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.3</span>
+                        </div>
+                        <div class="price">₹300 for two</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Restaurant 5 -->
+            <div class="restaurant-card" onclick="openRestaurantDetail(5)">
+                <div style="position: relative;">
+                    <img src="https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400" alt="Sweet Tooth Bakery" class="restaurant-image">
+                    <div class="restaurant-badge">Recommended</div>
+                </div>
+                <div class="restaurant-info">
+                    <h3 class="restaurant-name">Sweet Tooth Bakery</h3>
+                    <p class="restaurant-cuisine">Desserts, Bakery</p>
+                    <div class="restaurant-meta">
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.6</span>
+                        </div>
+                        <div class="price">₹250 for two</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Restaurant 6 -->
+            <div class="restaurant-card" onclick="openRestaurantDetail(6)">
+                <div style="position: relative;">
+                    <img src="https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400" alt="Coastal Curry" class="restaurant-image">
+                    <div class="restaurant-badge">Trending</div>
+                </div>
+                <div class="restaurant-info">
+                    <h3 class="restaurant-name">Coastal Curry</h3>
+                    <p class="restaurant-cuisine">Indian, Seafood</p>
+                    <div class="restaurant-meta">
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.4</span>
+                        </div>
+                        <div class="price">₹600 for two</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="noResults" class="no-results" style="display: none;">
+            <i class="fas fa-search"></i>
+            <h3>No restaurants found</h3>
+            <p>Try searching with different keywords</p>
+        </div>
+    </section>
+
+    <!-- Restaurant Detail Modal -->
+    <div class="modal" id="restaurantModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="modal-header">
+                <img id="modalImage" src="" alt="Restaurant">
+            </div>
+            <div class="modal-body">
+                <h2 class="restaurant-detail-name" id="modalName"></h2>
+                <div class="restaurant-detail-info">
+                    <div class="info-item">
+                        <i class="fas fa-star"></i>
+                        <span id="modalRating"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span id="modalLocation"></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <span id="modalTiming"></span>
+                    </div>
+                </div>
+                <div class="menu-section">
+                    <h3>Menu</h3>
+                    <div class="menu-grid" id="menuGrid">
+                        <!-- Menu items will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <div class="reviews-section">
+                    <h3 style="margin-bottom: 1.5rem;">Customer Reviews</h3>
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">A</div>
+                                <div>
+                                    <div class="reviewer-name">Amit Sharma</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-secondary);">2 days ago</div>
+                                </div>
+                            </div>
+                            <div class="review-rating">4.5 <i class="fas fa-star"></i></div>
+                        </div>
+                        <div class="review-text">Amazing food and great ambience! The service was excellent and the food arrived hot. Will definitely order again.</div>
+                        <div class="review-actions">
+                            <button class="review-action"><i class="far fa-thumbs-up"></i> Helpful (12)</button>
+                            <button class="review-action"><i class="far fa-comment"></i> Comment</button>
+                        </div>
+                    </div>
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">P</div>
+                                <div>
+                                    <div class="reviewer-name">Priya Singh</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-secondary);">1 week ago</div>
+                                </div>
+                            </div>
+                            <div class="review-rating">5.0 <i class="fas fa-star"></i></div>
+                        </div>
+                        <div class="review-text">Best restaurant in the area! The quality is consistently good and portions are generous. Highly recommended!</div>
+                        <div class="review-actions">
+                            <button class="review-action"><i class="far fa-thumbs-up"></i> Helpful (8)</button>
+                            <button class="review-action"><i class="far fa-comment"></i> Comment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Badge -->
+    <div class="cart-badge" onclick="alert('Cart feature coming soon!')">
+        <i class="fas fa-shopping-cart"></i>
+        <div class="cart-count" id="cartCount">0</div>
+    </div>
+
+    <!-- Popular Cuisines -->
+    <section class="cuisines-section">
+        <h2 class="section-title">Popular Cuisines Near You</h2>
+        <div class="cuisines-grid">
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍛</div>
+                <div class="cuisine-name">Indian</div>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍜</div>
+                <div class="cuisine-name">Chinese</div>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍕</div>
+                <div class="cuisine-name">Italian</div>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍔</div>
+                <div class="cuisine-name">Fast Food</div>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍰</div>
+                <div class="cuisine-name">Desserts</div>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🍱</div>
+                <div class="cuisine-name">Japanese</div>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🌮</div>
+                <div class="cuisine-name">Mexican</div>
+            </div>
+            <div class="cuisine-card">
+                <div class="cuisine-icon">🥗</div>
+                <div class="cuisine-name">Healthy</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About Zomato</h3>
+                <ul>
+                    <li><a href="#">Who We Are</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Work With Us</a></li>
+                    <li><a href="#">Investor Relations</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>For Restaurants</h3>
+                <ul>
+                    <li><a href="#">Partner With Us</a></li>
+                    <li><a href="#">Apps For You</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Learn More</h3>
+                <ul>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Security</a></li>
+                    <li><a href="#">Terms</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Social Links</h3>
+                <ul>
+                    <li><a href="#"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    <li><a href="#"><i class="fab fa-twitter"></i> Twitter</a></li>
+                    <li><a href="#"><i class="fab fa-instagram"></i> Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Zomato Clone. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mock Restaurant Data
+        const restaurants = [
+            {
+                id: 1,
+                name: "The Spice Route",
+                cuisine: "Indian, North Indian",
+                rating: 4.5,
+                price: "₹500 for two",
+                image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=400",
+                location: "Connaught Place",
+                timing: "11:00 AM - 11:00 PM",
+                badge: "Trending",
+                menu: [
+                    { name: "Butter Chicken", description: "Creamy tomato curry with tender chicken", price: "₹350" },
+                    { name: "Paneer Tikka", description: "Grilled cottage cheese with spices", price: "₹280" },
+                    { name: "Biryani", description: "Fragrant rice with spices and meat", price: "₹400" },
+                    { name: "Dal Makhani", description: "Black lentils in creamy gravy", price: "₹250" }
+                ]
+            },
+            {
+                id: 2,
+                name: "Dragon Wok",
+                cuisine: "Chinese, Asian",
+                rating: 4.2,
+                price: "₹400 for two",
+                image: "https://images.unsplash.com/photo-1617093727343-374698b1b08d?w=400",
+                location: "Cyber Hub",
+                timing: "12:00 PM - 10:30 PM",
+                badge: "Popular",
+                menu: [
+                    { name: "Hakka Noodles", description: "Stir-fried noodles with vegetables", price: "₹220" },
+                    { name: "Manchurian", description: "Fried veggie balls in spicy sauce", price: "₹240" },
+                    { name: "Fried Rice", description: "Classic Chinese fried rice", price: "₹200" },
+                    { name: "Spring Rolls", description: "Crispy vegetable rolls", price: "₹180" }
+                ]
+            },
+            {
+                id: 3,
+                name: "Pasta Paradise",
+                cuisine: "Italian, Continental",
+                rating: 4.7,
+                price: "₹800 for two",
+                image: "https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=400",
+                location: "Hauz Khas",
+                timing: "11:30 AM - 11:00 PM",
+                badge: "New",
+                menu: [
+                    { name: "Margherita Pizza", description: "Classic pizza with mozzarella", price: "₹450" },
+                    { name: "Pasta Alfredo", description: "Creamy white sauce pasta", price: "₹380" },
+                    { name: "Lasagna", description: "Layered pasta with meat sauce", price: "₹420" },
+                    { name: "Tiramisu", description: "Classic Italian dessert", price: "₹280" }
+                ]
+            },
+            {
+                id: 4,
+                name: "Burger Hub",
+                cuisine: "Fast Food, American",
+                rating: 4.3,
+                price: "₹300 for two",
+                image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400",
+                location: "Sector 18",
+                timing: "10:00 AM - 12:00 AM",
+                badge: "Fast Delivery",
+                menu: [
+                    { name: "Classic Burger", description: "Juicy patty with fresh veggies", price: "₹180" },
+                    { name: "Cheese Fries", description: "Crispy fries with cheese sauce", price: "₹140" },
+                    { name: "Chicken Wings", description: "Spicy fried chicken wings", price: "₹220" },
+                    { name: "Milkshake", description: "Thick chocolate milkshake", price: "₹120" }
+                ]
+            },
+            {
+                id: 5,
+                name: "Sweet Tooth Bakery",
+                cuisine: "Desserts, Bakery",
+                rating: 4.6,
+                price: "₹250 for two",
+                image: "https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=400",
+                location: "Nehru Place",
+                timing: "9:00 AM - 9:00 PM",
+                badge: "Recommended",
+                menu: [
+                    { name: "Chocolate Cake", description: "Rich chocolate layered cake", price: "₹350" },
+                    { name: "Red Velvet", description: "Classic red velvet cake", price: "₹380" },
+                    { name: "Cupcakes", description: "Assorted flavored cupcakes", price: "₹80" },
+                    { name: "Macarons", description: "French almond cookies", price: "₹150" }
+                ]
+            },
+            {
+                id: 6,
+                name: "Coastal Curry",
+                cuisine: "Indian, Seafood",
+                rating: 4.4,
+                price: "₹600 for two",
+                image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?w=400",
+                location: "Khan Market",
+                timing: "12:00 PM - 10:00 PM",
+                badge: "Trending",
+                menu: [
+                    { name: "Fish Curry", description: "Spicy coastal fish curry", price: "₹420" },
+                    { name: "Prawn Masala", description: "Prawns in rich gravy", price: "₹480" },
+                    { name: "Crab Fry", description: "Crispy fried crab", price: "₹550" },
+                    { name: "Fish Tikka", description: "Grilled fish pieces", price: "₹380" }
+                ]
+                
+            }, 
+            {
+                id: 7,
+                name: "Cafe Mocha",
+                cuisine: "Cafe, Coffee",
+                rating: 4.8,
+                price: "₹350 for two",
+                image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400",
+                location: "Hauz Khas Village",
+                timing: "8:00 AM - 11:00 PM",
+                badge: "Top Rated",
+                menu: [
+                    { name: "Cappuccino", description: "Classic Italian coffee", price: "₹180" },
+                    { name: "Cold Brew", description: "Smooth cold coffee", price: "₹220" },
+                    { name: "Croissant", description: "Buttery French pastry", price: "₹120" },
+                    { name: "Avocado Toast", description: "Healthy breakfast option", price: "₹280" }
+                ]
+            },
+            {
+                id: 8,
+                name: "Sushi Express",
+                cuisine: "Japanese, Sushi",
+                rating: 4.5,
+                price: "₹900 for two",
+                image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400",
+                location: "DLF Cyber City",
+                timing: "12:00 PM - 11:00 PM",
+                badge: "New",
+                menu: [
+                    { name: "California Roll", description: "Crab and avocado sushi", price: "₹450" },
+                    { name: "Salmon Nigiri", description: "Fresh salmon on rice", price: "₹380" },
+                    { name: "Tempura", description: "Fried seafood and vegetables", price: "₹420" },
+                    { name: "Miso Soup", description: "Traditional Japanese soup", price: "₹180" }
+                ]
+            },
+            {
+                id: 9,
+                name: "Taco Fiesta",
+                cuisine: "Mexican, Fast Food",
+                rating: 4.1,
+                price: "₹450 for two",
+                image: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400",
+                location: "Saket",
+                timing: "11:00 AM - 11:00 PM",
+                badge: "Popular",
+                menu: [
+                    { name: "Chicken Tacos", description: "Soft tortillas with grilled chicken", price: "₹280" },
+                    { name: "Burrito Bowl", description: "Rice bowl with beans and meat", price: "₹320" },
+                    { name: "Nachos", description: "Crispy chips with cheese", price: "₹220" },
+                    { name: "Quesadilla", description: "Cheesy tortilla wrap", price: "₹260" }
+                ]
+            },
+            {
+                id: 10,
+                name: "The Green Leaf",
+                cuisine: "Healthy, Salads",
+                rating: 4.6,
+                price: "₹550 for two",
+                image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400",
+                location: "GK-1",
+                timing: "8:00 AM - 9:00 PM",
+                badge: "Healthy",
+                menu: [
+                    { name: "Caesar Salad", description: "Fresh romaine with parmesan", price: "₹320" },
+                    { name: "Quinoa Bowl", description: "Protein-packed grain bowl", price: "₹380" },
+                    { name: "Green Smoothie", description: "Nutritious fruit blend", price: "₹220" },
+                    { name: "Grilled Chicken", description: "Lean protein option", price: "₹350" }
+                ]
+            },
+            {
+                id: 11,
+                name: "BBQ Nation",
+                cuisine: "Indian, BBQ",
+                rating: 4.3,
+                price: "₹1200 for two",
+                image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400",
+                location: "Rajouri Garden",
+                timing: "12:00 PM - 11:00 PM",
+                badge: "Buffet",
+                menu: [
+                    { name: "Unlimited BBQ", description: "All-you-can-eat grilled items", price: "₹599" },
+                    { name: "Tandoori Platter", description: "Assorted tandoori items", price: "₹450" },
+                    { name: "Buffet Dinner", description: "Full course meal", price: "₹799" },
+                    { name: "Dessert Bar", description: "Multiple dessert options", price: "₹250" }
+                ]
+            },
+            {
+                id: 12,
+                name: "Pizza Corner",
+                cuisine: "Italian, Pizza",
+                rating: 4.0,
+                price: "₹400 for two",
+                image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400",
+                location: "Lajpat Nagar",
+                timing: "11:00 AM - 11:30 PM",
+                badge: "Fast Delivery",
+                menu: [
+                    { name: "Pepperoni Pizza", description: "Classic meat pizza", price: "₹380" },
+                    { name: "Veggie Supreme", description: "Loaded vegetable pizza", price: "₹350" },
+                    { name: "Garlic Bread", description: "Buttery garlic toast", price: "₹120" },
+                    { name: "Cheese Burst", description: "Extra cheesy crust", price: "₹450" }
+                ]
+            },
+            {
+                id: 13,
+                name: "Kebab Corner",
+                cuisine: "Indian, Mughlai",
+                rating: 4.4,
+                price: "₹600 for two",
+                image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?w=400",
+                location: "Chandni Chowk",
+                timing: "12:00 PM - 11:00 PM",
+                badge: "New",
+                menu: [
+                    { name: "California Roll", description: "Crab and avocado sushi", price: "₹450" },
+                    { name: "Salmon Nigiri", description: "Fresh salmon on rice", price: "₹380" },
+                    { name: "Tempura", description: "Fried seafood and vegetables", price: "₹420" },
+                    { name: "Miso Soup", description: "Traditional Japanese soup", price: "₹180" }
+            ]
+            }
+        ];
+
+        let filteredRestaurants = [...restaurants];
+
+        // Load Restaurants
+        function loadRestaurants() {
+            const grid = document.getElementById('restaurantGrid');
+            const noResults = document.getElementById('noResults');
+            
+            grid.innerHTML = '';
+            
+            if (filteredRestaurants.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            
+            filteredRestaurants.forEach((restaurant, index) => {
+                const card = document.createElement('div');
+                card.className = 'restaurant-card';
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.onclick = () => openRestaurantDetail(restaurant.id);
+                
+                card.innerHTML = `
+                    <div style="position: relative;">
+                        <img src="${restaurant.image}" alt="${restaurant.name}" class="restaurant-image">
+                        <div class="restaurant-badge">${restaurant.badge}</div>
+                    </div>
+                    <div class="restaurant-info">
+                        <h3 class="restaurant-name">${restaurant.name}</h3>
+                        <p class="restaurant-cuisine">${restaurant.cuisine}</p>
+                        <div class="restaurant-meta">
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <span>${restaurant.rating}</span>
+                            </div>
+                            <div class="price">${restaurant.price}</div>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Search Restaurants
+        function searchRestaurants() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            filteredRestaurants = restaurants.filter(restaurant => 
+                restaurant.name.toLowerCase().includes(searchTerm) ||
+                restaurant.cuisine.toLowerCase().includes(searchTerm)
+            );
+            
+            loadRestaurants();
+        }
+
+        // Filter Restaurants
+        function filterRestaurants(cuisine) {
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (cuisine === 'all') {
+                filteredRestaurants = [...restaurants];
+            } else {
+                filteredRestaurants = restaurants.filter(restaurant => 
+                    restaurant.cuisine.includes(cuisine)
+                );
+            }
+            
+            loadRestaurants();
